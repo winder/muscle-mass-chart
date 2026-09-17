@@ -5,7 +5,10 @@
   import { computeScenarioCurve } from '../data/computeCurve.js';
   import { AGE_MIN, AGE_MAX, createScenario } from '../data/scenario.js';
 
-  let { scenario } = $props();
+  // TODO(muscle-mass-chart-kz3.4): only the first scenario is rendered until
+  // multi-line rendering lands; full `scenarios` array support is task kz3.4.
+  let { scenarios } = $props();
+  const scenario = $derived(scenarios[0]);
 
   const baselineScenario = createScenario({
     id: 'baseline',
