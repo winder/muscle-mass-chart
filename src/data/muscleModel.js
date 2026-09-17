@@ -42,21 +42,22 @@ export const exerciserCurve = {
     { age: 35, value: 99 },
     { age: 40, value: 97 },
     { age: 45, value: 94 },
-    { age: 50, value: 90 },
-    { age: 55, value: 86 },
-    { age: 60, value: 81 },
-    { age: 65, value: 76 },
-    { age: 70, value: 71 },
-    { age: 75, value: 66 },
-    { age: 80, value: 61 },
-    { age: 85, value: 56 },
-    { age: 90, value: 51 },
+    { age: 50, value: 92 },
+    { age: 55, value: 89 },
+    { age: 60, value: 85 },
+    { age: 65, value: 81 },
+    { age: 70, value: 76 },
+    { age: 75, value: 71 },
+    { age: 80, value: 67 },
+    { age: 85, value: 63 },
+    { age: 90, value: 59 },
   ],
 };
 
 // Placeholder threshold: picked so it sits between the two curves' late-life
-// trajectories (non-exerciser crosses below it in the 70s, exerciser not
-// until near 90), matching the qualitative shape of the reference chart.
+// trajectories — non-exerciser crosses below it in the 70s, while exerciser
+// stays clear of it through age 90 — matching the reference chart, where the
+// exerciser line never dips into disability-risk territory in the plotted range.
 export const disabilityThreshold = {
   label: 'Disability threshold',
   value: 55,
