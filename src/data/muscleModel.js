@@ -53,3 +53,12 @@ export const exerciserCurve = {
     { age: 90, value: 51 },
   ],
 };
+
+// Placeholder threshold: picked so it sits between the two curves' late-life
+// trajectories (non-exerciser crosses below it in the 70s, exerciser not
+// until near 90), matching the qualitative shape of the reference chart.
+export const disabilityThreshold = {
+  label: 'Disability threshold',
+  value: 55,
+  source: null,
+};

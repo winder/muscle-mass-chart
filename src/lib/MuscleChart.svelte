@@ -1,7 +1,11 @@
 <script>
   import { onMount, onDestroy } from 'svelte';
   import Chart from 'chart.js/auto';
-  import { exerciserCurve, nonExerciserCurve } from '../data/muscleModel.js';
+  import {
+    exerciserCurve,
+    nonExerciserCurve,
+    disabilityThreshold,
+  } from '../data/muscleModel.js';
 
   let canvas;
   let chart;
@@ -24,6 +28,17 @@
         datasets: [
           toDataset(exerciserCurve, '#2e7d32'),
           toDataset(nonExerciserCurve, '#c62828'),
+          {
+            label: disabilityThreshold.label,
+            data: [
+              { x: 10, y: disabilityThreshold.value },
+              { x: 90, y: disabilityThreshold.value },
+            ],
+            borderColor: '#616161',
+            borderDash: [6, 4],
+            pointRadius: 0,
+            tension: 0,
+          },
         ],
       },
       options: {
