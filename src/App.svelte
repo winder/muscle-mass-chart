@@ -1,6 +1,7 @@
 <script>
   import MuscleChart from './lib/MuscleChart.svelte';
   import TimelineEditor from './lib/TimelineEditor.svelte';
+  import AboutModel from './lib/AboutModel.svelte';
   import { PRESETS } from './data/presets.js';
 
   let nextId = 1;
@@ -102,6 +103,8 @@
     not medical advice or a clinical prediction tool. Individual results
     vary significantly.
   </p>
+
+  <AboutModel />
 </main>
 
 <style>
