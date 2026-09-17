@@ -6,7 +6,7 @@
   import { AGE_MIN, AGE_MAX, createScenario } from '../data/scenario.js';
   import { colorForIndex } from '../data/colors.js';
 
-  let { scenarios, showDisabilityThreshold = true } = $props();
+  let { scenarios = [], showDisabilityThreshold = true } = $props();
 
   const baselineScenario = createScenario({
     id: 'baseline',
