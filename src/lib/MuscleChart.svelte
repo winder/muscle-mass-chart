@@ -4,11 +4,9 @@
   import { disabilityThreshold } from '../data/muscleModel.js';
   import { computeScenarioCurve } from '../data/computeCurve.js';
   import { AGE_MIN, AGE_MAX, createScenario } from '../data/scenario.js';
+  import { colorForIndex } from '../data/colors.js';
 
-  // TODO(muscle-mass-chart-kz3.4): only the first scenario is rendered until
-  // multi-line rendering lands; full `scenarios` array support is task kz3.4.
   let { scenarios } = $props();
-  const scenario = $derived(scenarios[0]);
 
   const baselineScenario = createScenario({
     id: 'baseline',
@@ -33,7 +31,9 @@
 
   function buildDatasets() {
     return [
-      toDataset(computeScenarioCurve(scenario), scenario.label, '#2e7d32'),
+      ...scenarios.map((scenario) =>
+        toDataset(computeScenarioCurve(scenario), scenario.label, colorForIndex(scenario.colorIndex))
+      ),
       toDataset(computeScenarioCurve(baselineScenario), baselineScenario.label, '#c62828'),
       {
         label: disabilityThreshold.label,
@@ -75,8 +75,9 @@
   });
 
   $effect(() => {
-    // Re-read scenario so this effect reruns whenever its phases change.
-    scenario;
+    // Re-read scenarios so this effect reruns whenever any of them change
+    // (added, removed, or a phase edited).
+    scenarios;
     if (chart) {
       chart.data.datasets = buildDatasets();
       chart.update();
