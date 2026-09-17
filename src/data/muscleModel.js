@@ -2,9 +2,11 @@
 // `source: null` until the Milestone 5 research pass replaces these with
 // cited values (PRD.md §10 M5).
 //
-// Values are % of that individual's own peak muscle mass (PRD.md §5.2),
-// so both curves reach 100 at their own peak; they differ in how long that
-// peak is sustained and how fast it declines afterward.
+// Values are % of that individual's own peak muscle mass (PRD.md §5.2).
+// nonExerciserCurve is the sedentary baseline that computeCurve.js interpolates
+// and applies activity-driven "bonus" adjustments on top of (see
+// computeCurve.js) — the M1 hardcoded "Exerciser" curve was replaced by that
+// computed curve in Milestone 2 and removed from here as dead weight.
 
 export const nonExerciserCurve = {
   label: 'Non-exerciser',
@@ -30,34 +32,7 @@ export const nonExerciserCurve = {
   ],
 };
 
-export const exerciserCurve = {
-  label: 'Exerciser',
-  source: null,
-  points: [
-    { age: 10, value: 55 },
-    { age: 15, value: 80 },
-    { age: 20, value: 95 },
-    { age: 25, value: 100 },
-    { age: 30, value: 100 },
-    { age: 35, value: 99 },
-    { age: 40, value: 97 },
-    { age: 45, value: 94 },
-    { age: 50, value: 92 },
-    { age: 55, value: 89 },
-    { age: 60, value: 85 },
-    { age: 65, value: 81 },
-    { age: 70, value: 76 },
-    { age: 75, value: 71 },
-    { age: 80, value: 67 },
-    { age: 85, value: 63 },
-    { age: 90, value: 59 },
-  ],
-};
-
-// Placeholder threshold: picked so it sits between the two curves' late-life
-// trajectories — non-exerciser crosses below it in the 70s, while exerciser
-// stays clear of it through age 90 — matching the reference chart, where the
-// exerciser line never dips into disability-risk territory in the plotted range.
+// Placeholder threshold value — see PRD §7, refined in the M5 research pass.
 export const disabilityThreshold = {
   label: 'Disability threshold',
   value: 55,
