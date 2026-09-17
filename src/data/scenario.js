@@ -55,30 +55,42 @@ export function findPhaseAtAge(phases, age) {
 }
 
 /**
- * Move the boundary between phases[index] and phases[index + 1] to newEndAge,
- * clamped so both phases keep at least a 1-year span. Returns a new array.
+ * Change phases[index]'s end age, clamped to at least a 1-year span.
+ *
+ * For any phase but the last, this just moves the boundary with its next
+ * neighbor (both keep at least a 1-year span). The last phase has no next
+ * neighbor to hand its shortened range to, so lowering its end age below
+ * AGE_MAX instead auto-splits it: it's shortened, and a new trailing phase
+ * (a copy of it, same activity) is appended to fill the rest up to AGE_MAX —
+ * this is how the UI lets a user carve out a new final phase without a
+ * separate "Split" control: the last phase's end age is always editable,
+ * and editing it down is the split.
+ *
+ * Returns a new array.
  */
 export function setPhaseEndAge(phases, index, newEndAge) {
-  if (index < 0 || index >= phases.length - 1) return phases;
-  const minEnd = phases[index].startAge + 1;
-  const maxEnd = phases[index + 1].endAge - 1;
-  const clamped = Math.min(Math.max(newEndAge, minEnd), maxEnd);
-  return phases.map((phase, i) => {
-    if (i === index) return { ...phase, endAge: clamped };
-    if (i === index + 1) return { ...phase, startAge: clamped };
-    return phase;
-  });
-}
-
-/** Split a phase at its midpoint into two identical-activity phases. Returns a new array. */
-export function splitPhase(phases, index) {
+  if (index < 0 || index >= phases.length) return phases;
   const phase = phases[index];
-  if (!phase) return phases;
-  const mid = Math.round((phase.startAge + phase.endAge) / 2);
-  if (mid <= phase.startAge || mid >= phase.endAge) return phases;
-  const first = { ...phase, endAge: mid };
-  const second = { ...phase, startAge: mid };
-  return [...phases.slice(0, index), first, second, ...phases.slice(index + 1)];
+  const isLast = index === phases.length - 1;
+  const minEnd = phase.startAge + 1;
+  const maxEnd = isLast ? AGE_MAX : phases[index + 1].endAge - 1;
+  const clamped = Math.min(Math.max(newEndAge, minEnd), maxEnd);
+
+  if (!isLast) {
+    return phases.map((p, i) => {
+      if (i === index) return { ...p, endAge: clamped };
+      if (i === index + 1) return { ...p, startAge: clamped };
+      return p;
+    });
+  }
+  if (clamped >= AGE_MAX) {
+    return phases.map((p, i) => (i === index ? { ...p, endAge: AGE_MAX } : p));
+  }
+  return [
+    ...phases.slice(0, index),
+    { ...phase, endAge: clamped },
+    { ...phase, startAge: clamped, endAge: AGE_MAX },
+  ];
 }
 
 /**

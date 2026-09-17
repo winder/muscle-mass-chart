@@ -5,7 +5,6 @@
     CARDIO_ZONES,
     AGE_MAX,
     setPhaseEndAge,
-    splitPhase,
     removePhase,
   } from '../data/scenario.js';
 
@@ -50,10 +49,6 @@
     phases = phases.map((phase, i) => (i === index ? { ...phase, cardioZone } : phase));
   }
 
-  function onSplit(index) {
-    phases = splitPhase(phases, index);
-  }
-
   function onRemove(index) {
     phases = removePhase(phases, index);
   }
@@ -95,22 +90,17 @@
         </select>
       {/if}
 
-      {#if index < phases.length - 1}
-        <label class="end-age">
-          ends
-          <input
-            type="number"
-            min={phase.startAge + 1}
-            max={AGE_MAX - 1}
-            value={phase.endAge}
-            onchange={(e) => updateEndAge(index, e.target.value)}
-          />
-        </label>
-      {:else}
-        <span class="end-age">through {AGE_MAX}</span>
-      {/if}
+      <label class="end-age">
+        {index < phases.length - 1 ? 'ends' : 'through'}
+        <input
+          type="number"
+          min={phase.startAge + 1}
+          max={AGE_MAX}
+          value={phase.endAge}
+          onchange={(e) => updateEndAge(index, e.target.value)}
+        />
+      </label>
 
-      <button type="button" onclick={() => onSplit(index)}>Split</button>
       <button type="button" onclick={() => onRemove(index)} disabled={phases.length <= 1}>
         Remove
       </button>
