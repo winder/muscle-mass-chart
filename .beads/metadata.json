@@ -1,0 +1,7 @@
+{
+  "database": "dolt",
+  "backend": "dolt",
+  "dolt_mode": "embedded",
+  "dolt_database": "muscle_mass_chart",
+  "project_id": "d17c69e4-fad4-4dd6-9cb0-ea5379f4dccc"
+}
