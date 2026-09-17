@@ -88,11 +88,18 @@ export function computeScenarioCurve(scenario, { stepYears = 1 } = {}) {
 
     const baseline = baselineValueAt(age);
     const baselineDelta = baseline - prevBaseline;
-    // Growing years get the full baseline growth plus that year's increase
-    // in the training bonus (a higher achievable peak); declining years get
-    // only `retention`'s share of the baseline's loss that year (a slower
-    // decline that widens the gap from sedentary over time).
-    value += baselineDelta >= 0 ? baselineDelta + (bonus - prevBonus) : baselineDelta * retention;
+    // The *natural* (age-driven) component: full baseline growth during
+    // growing years regardless of activity, but only `retention`'s share of
+    // the baseline's loss during declining years (a slower decline).
+    const naturalComponent = baselineDelta >= 0 ? baselineDelta : baselineDelta * retention;
+    // The *training* component: that year's increase in the bonus, added on
+    // top of the natural component unconditionally -- including at ages
+    // past the sedentary curve's own peak. Without this, starting training
+    // late in life could only ever slow further loss, never produce actual
+    // regrowth, because bonus growth was previously gated on the baseline
+    // itself still rising (which stops being true after ~30). A late
+    // starter should be able to see real gains, not just reduced loss.
+    value += naturalComponent + (bonus - prevBonus);
     prevBaseline = baseline;
 
     points.push({ age, value: Math.max(0, value) });
