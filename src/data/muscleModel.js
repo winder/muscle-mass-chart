@@ -21,7 +21,7 @@ export const nonExerciserCurve = {
     'Mitchell et al. 2012 (decade decline rates); Goodpaster et al. 2006 ' +
     '(post-60 acceleration); Janssen et al. 2000 (cross-sectional shape). ' +
     'Ages 10-20 extrapolated from general pubertal-accretion timing, not ' +
-    'directly cited. Male-population values; see RESEARCH.md §1.',
+    'directly cited. Male-population values.',
   points: [
     { age: 10, value: 45 },
     { age: 15, value: 68 },
@@ -55,5 +55,5 @@ export const disabilityThreshold = {
     'Approximated from EWGSOP2 (Cruz-Jentoft et al. 2019), Baumgartner et ' +
     'al. 1998, and FNIH (Cawthon et al. 2014) appendicular-lean-mass-index ' +
     'cutoffs, translated to % of sedentary peak via reference-population CV; ' +
-    'plausible range 65-75. See RESEARCH.md §4.',
+    'plausible range 65-75.',
 };

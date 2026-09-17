@@ -66,18 +66,16 @@ export const ACTIVITY_TARGET_SOURCES = {
     'Walker et al. 2023 (lifelong-athlete ALMI advantage sets the "high" ' +
     'bonus target); Piasecki et al. 2019 and Wroblewski et al. 2011 ' +
     '(late-starters match lifelong trainers; near-zero decline in trained ' +
-    'muscle CSA with age sets the "high" retention target). See ' +
-    'RESEARCH.md §2.',
+    'muscle CSA with age sets the "high" retention target).',
   cardio:
     'Extrapolated from strengthTraining values using the endurance-vs-' +
     'strength advantage ratio in Walker et al. 2023 — direct evidence for ' +
     'aerobic-specific bonus/retention magnitudes is sparse. Weakest-' +
-    'evidence section of the research pass; see RESEARCH.md §3.',
+    'evidence area of the underlying research.',
   walking:
     'Extrapolated from strengthTraining values (lower than cardio, as the ' +
     'lowest-intensity activity type), using the same Walker et al. 2023 ' +
-    'ratio as cardio. Weakest-evidence section of the research pass; see ' +
-    'RESEARCH.md §3.',
+    'ratio as cardio. Weakest-evidence area of the underlying research.',
 };
 
 function targetFor(table, phase) {

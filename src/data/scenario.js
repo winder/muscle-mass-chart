@@ -1,8 +1,8 @@
 // Phase and Scenario data structures — PRD.md §5.1, §5.3.
 //
 // Forward-compat note (PRD §5.3): a Phase currently holds one activity
-// (activityType/intensity/cardioZone). When compound/stacked activities are
-// added post-V1, this becomes `activities: Activity[]` per phase. Phase-level
+// (activityType/intensity). When compound/stacked activities are added
+// post-V1, this becomes `activities: Activity[]` per phase. Phase-level
 // concerns (the age range) and activity-level concerns (type/intensity) are
 // kept in separate helper functions below so that change stays additive.
 
@@ -11,7 +11,6 @@ export const AGE_MAX = 90;
 
 export const ACTIVITY_TYPES = ['sedentary', 'strengthTraining', 'cardio', 'walking'];
 export const INTENSITIES = ['low', 'moderate', 'high'];
-export const CARDIO_ZONES = ['zone1_2', 'zone3', 'zone4_5'];
 
 /**
  * @typedef {Object} Phase
@@ -19,18 +18,14 @@ export const CARDIO_ZONES = ['zone1_2', 'zone3', 'zone4_5'];
  * @property {number} endAge
  * @property {'sedentary'|'strengthTraining'|'cardio'|'walking'} activityType
  * @property {'low'|'moderate'|'high'} [intensity] - omitted when sedentary
- * @property {'zone1_2'|'zone3'|'zone4_5'} [cardioZone] - only when activityType is 'cardio'
  */
 
 /** @param {Partial<Phase>} fields */
-export function createPhase({ startAge, endAge, activityType, intensity, cardioZone }) {
+export function createPhase({ startAge, endAge, activityType, intensity }) {
   /** @type {Phase} */
   const phase = { startAge, endAge, activityType };
   if (activityType !== 'sedentary') {
     phase.intensity = intensity ?? 'moderate';
-  }
-  if (activityType === 'cardio') {
-    phase.cardioZone = cardioZone ?? 'zone1_2';
   }
   return phase;
 }

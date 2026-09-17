@@ -100,7 +100,6 @@ Phase {
   endAge
   activityType: "sedentary" | "strengthTraining" | "cardio" | "walking"
   intensity: "low" | "moderate" | "high"   // ignored/omitted when sedentary
-  cardioZone?: "zone1_2" | "zone3" | "zone4_5"  // only when activityType === "cardio"
 }
 ```
 
@@ -234,7 +233,6 @@ be created when implementation starts (not created yet).
 - [ ] Global metric selector: "% of peak" (active) / "Lean body mass"
       (visibly present, disabled, "coming soon")
 - [ ] Multi-line rendering with legend, distinct colors per scenario
-- [ ] Cardio zone sub-selector when activity type is "cardio"
 
 ### M4 — Disability threshold toggle & polish
 - [ ] Make the disability threshold line user-toggleable

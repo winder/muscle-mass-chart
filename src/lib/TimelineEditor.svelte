@@ -2,17 +2,10 @@
   import {
     ACTIVITY_TYPES,
     INTENSITIES,
-    CARDIO_ZONES,
     AGE_MAX,
     setPhaseEndAge,
     removePhase,
   } from '../data/scenario.js';
-
-  const CARDIO_ZONE_LABELS = {
-    zone1_2: 'Zone 1–2 (easy)',
-    zone3: 'Zone 3 (moderate)',
-    zone4_5: 'Zone 4–5 (hard)',
-  };
 
   let { phases = $bindable([]) } = $props();
 
@@ -28,14 +21,8 @@
       const next = { ...phase, activityType };
       if (activityType === 'sedentary') {
         delete next.intensity;
-        delete next.cardioZone;
       } else {
         next.intensity = phase.intensity ?? 'moderate';
-        if (activityType === 'cardio') {
-          next.cardioZone = phase.cardioZone ?? 'zone1_2';
-        } else {
-          delete next.cardioZone;
-        }
       }
       return next;
     });
@@ -43,10 +30,6 @@
 
   function updateIntensity(index, intensity) {
     phases = phases.map((phase, i) => (i === index ? { ...phase, intensity } : phase));
-  }
-
-  function updateCardioZone(index, cardioZone) {
-    phases = phases.map((phase, i) => (i === index ? { ...phase, cardioZone } : phase));
   }
 
   function onRemove(index) {
@@ -75,17 +58,6 @@
         >
           {#each INTENSITIES as level}
             <option value={level}>{level}</option>
-          {/each}
-        </select>
-      {/if}
-
-      {#if phase.activityType === 'cardio'}
-        <select
-          value={phase.cardioZone ?? 'zone1_2'}
-          onchange={(e) => updateCardioZone(index, e.target.value)}
-        >
-          {#each CARDIO_ZONES as zone}
-            <option value={zone}>{CARDIO_ZONE_LABELS[zone]}</option>
           {/each}
         </select>
       {/if}

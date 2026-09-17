@@ -26,10 +26,6 @@
         <dd>{source}</dd>
       {/each}
     </dl>
-    <p class="full-writeup">
-      Full write-up with methodology and reference list:
-      <a href="/RESEARCH.md" target="_blank" rel="noopener">RESEARCH.md</a>
-    </p>
   </div>
 </details>
 
@@ -67,11 +63,4 @@
     margin: 0.15rem 0 0;
   }
 
-  .full-writeup {
-    margin: 0.75rem 0 0;
-  }
-
-  .full-writeup a {
-    color: inherit;
-  }
 </style>
