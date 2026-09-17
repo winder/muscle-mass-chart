@@ -9,6 +9,12 @@
     removePhase,
   } from '../data/scenario.js';
 
+  const CARDIO_ZONE_LABELS = {
+    zone1_2: 'Zone 1–2 (easy)',
+    zone3: 'Zone 3 (moderate)',
+    zone4_5: 'Zone 4–5 (hard)',
+  };
+
   let { phases = $bindable([]) } = $props();
 
   function updateEndAge(index, value) {
@@ -84,7 +90,7 @@
           onchange={(e) => updateCardioZone(index, e.target.value)}
         >
           {#each CARDIO_ZONES as zone}
-            <option value={zone}>{zone}</option>
+            <option value={zone}>{CARDIO_ZONE_LABELS[zone]}</option>
           {/each}
         </select>
       {/if}
