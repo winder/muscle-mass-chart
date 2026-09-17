@@ -56,6 +56,15 @@
           </select>
         </label>
 
+        <label>
+          Sex:
+          <select bind:value={scenario.sex}>
+            <option value="male">Male</option>
+            <option value="female">Female</option>
+          </select>
+        </label>
+        <span class="sex-note">(doesn't affect the curve yet — pending the research pass)</span>
+
         <button
           type="button"
           onclick={() => removeScenario(scenario.id)}
@@ -85,9 +94,19 @@
   .scenario-header {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    flex-wrap: wrap;
     gap: 1rem;
     margin-bottom: 0.5rem;
+  }
+
+  .scenario-header .sex-note {
+    color: #777;
+    font-size: 0.85em;
+    flex: 1 1 auto;
+  }
+
+  .scenario-header button {
+    margin-left: auto;
   }
 
   .add-scenario {
