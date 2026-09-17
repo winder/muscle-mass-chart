@@ -102,4 +102,10 @@
     position: relative;
     height: 480px;
   }
+
+  @media (max-width: 480px) {
+    .chart-wrap {
+      height: 320px;
+    }
+  }
 </style>
