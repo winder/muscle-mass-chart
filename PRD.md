@@ -194,10 +194,13 @@ sex, so there's little extra cost to supporting both from the start.
 ## 9. Disclaimer
 
 Since this is a publicly shared health-adjacent tool, the UI must
-include a persistent, visible disclaimer along the lines of: *"This is
-an educational approximation based on general research trends, not
+include a persistent disclaimer along the lines of: *"This is an
+educational approximation based on general research trends, not
 medical advice or a clinical prediction tool. Individual results vary
-significantly."* Non-optional — not a footnote easily missed.
+significantly."* Non-optional — always present, not something a user
+can dismiss. Placement: below the chart, styled quietly (muted text,
+no colored callout box) rather than as a prominent banner — it should
+read as boilerplate, not as an alarming warning.
 
 ## 10. Milestone Roadmap
 

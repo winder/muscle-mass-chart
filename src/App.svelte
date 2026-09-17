@@ -43,12 +43,6 @@
 <main>
   <h1>Muscle Mass vs. Age Calculator</h1>
 
-  <p class="disclaimer">
-    This is an educational approximation based on general research trends,
-    not medical advice or a clinical prediction tool. Individual results
-    vary significantly.
-  </p>
-
   <label class="metric-picker">
     Metric:
     <select bind:value={metric}>
@@ -102,6 +96,12 @@
   <button type="button" class="add-scenario" onclick={addScenario}>+ Add scenario</button>
 
   <MuscleChart {scenarios} {showDisabilityThreshold} />
+
+  <p class="disclaimer">
+    This is an educational approximation based on general research trends,
+    not medical advice or a clinical prediction tool. Individual results
+    vary significantly.
+  </p>
 </main>
 
 <style>
@@ -148,13 +148,10 @@
   }
 
   .disclaimer {
-    background: #fff8e1;
-    border: 1px solid #e0c46c;
-    border-left: 4px solid #b8860b;
-    border-radius: 0.25rem;
-    padding: 0.75rem 1rem;
-    margin: 1rem 0;
-    font-size: 0.9em;
-    color: #5c4a00;
+    border-top: 1px solid #ddd;
+    padding-top: 0.75rem;
+    margin: 1.5rem 0 0;
+    font-size: 0.8em;
+    color: #777;
   }
 </style>
