@@ -6,7 +6,7 @@
   import { AGE_MIN, AGE_MAX, createScenario } from '../data/scenario.js';
   import { colorForIndex } from '../data/colors.js';
 
-  let { scenarios } = $props();
+  let { scenarios, showDisabilityThreshold = true } = $props();
 
   const baselineScenario = createScenario({
     id: 'baseline',
@@ -30,12 +30,14 @@
   }
 
   function buildDatasets() {
-    return [
+    const datasets = [
       ...scenarios.map((scenario) =>
         toDataset(computeScenarioCurve(scenario), scenario.label, colorForIndex(scenario.colorIndex))
       ),
       toDataset(computeScenarioCurve(baselineScenario), baselineScenario.label, '#c62828'),
-      {
+    ];
+    if (showDisabilityThreshold) {
+      datasets.push({
         label: disabilityThreshold.label,
         data: [
           { x: AGE_MIN, y: disabilityThreshold.value },
@@ -45,8 +47,9 @@
         borderDash: [6, 4],
         pointRadius: 0,
         tension: 0,
-      },
-    ];
+      });
+    }
+    return datasets;
   }
 
   onMount(() => {
@@ -75,9 +78,10 @@
   });
 
   $effect(() => {
-    // Re-read scenarios so this effect reruns whenever any of them change
-    // (added, removed, or a phase edited).
+    // Re-read scenarios and showDisabilityThreshold so this effect reruns
+    // whenever either changes (a scenario edit, or the threshold toggle).
     scenarios;
+    showDisabilityThreshold;
     if (chart) {
       chart.data.datasets = buildDatasets();
       chart.update();

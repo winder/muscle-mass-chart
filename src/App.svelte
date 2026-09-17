@@ -20,6 +20,7 @@
 
   let scenarios = $state([makeScenario(PRESETS[0].id, 0)]);
   let metric = $state('percentOfPeak');
+  let showDisabilityThreshold = $state(true);
 
   function addScenario() {
     scenarios.push(makeScenario(PRESETS[0].id, nextColorIndex++));
@@ -48,6 +49,11 @@
       <option value="percentOfPeak">% of Sedentary Reference Peak</option>
       <option value="leanBodyMass" disabled>Lean body mass (coming soon)</option>
     </select>
+  </label>
+
+  <label class="threshold-toggle">
+    <input type="checkbox" bind:checked={showDisabilityThreshold} />
+    Show disability threshold line
   </label>
 
   {#each scenarios as scenario (scenario.id)}
@@ -89,7 +95,7 @@
 
   <button type="button" class="add-scenario" onclick={addScenario}>+ Add scenario</button>
 
-  <MuscleChart {scenarios} />
+  <MuscleChart {scenarios} {showDisabilityThreshold} />
 </main>
 
 <style>
@@ -125,6 +131,13 @@
 
   .metric-picker {
     display: block;
+    margin: 1rem 0;
+  }
+
+  .threshold-toggle {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
     margin: 1rem 0;
   }
 </style>
