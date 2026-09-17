@@ -1,14 +1,31 @@
 <script>
   import { onMount, onDestroy } from 'svelte';
   import Chart from 'chart.js/auto';
+  import { exerciserCurve, nonExerciserCurve } from '../data/muscleModel.js';
 
   let canvas;
   let chart;
 
+  function toDataset(curve, color) {
+    return {
+      label: curve.label,
+      data: curve.points.map((p) => ({ x: p.age, y: p.value })),
+      borderColor: color,
+      backgroundColor: color,
+      tension: 0.3,
+      pointRadius: 0,
+    };
+  }
+
   onMount(() => {
     chart = new Chart(canvas, {
       type: 'line',
-      data: { datasets: [] },
+      data: {
+        datasets: [
+          toDataset(exerciserCurve, '#2e7d32'),
+          toDataset(nonExerciserCurve, '#c62828'),
+        ],
+      },
       options: {
         responsive: true,
         maintainAspectRatio: false,
