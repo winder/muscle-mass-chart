@@ -19,6 +19,7 @@
   }
 
   let scenarios = $state([makeScenario(PRESETS[0].id, 0)]);
+  let metric = $state('percentOfPeak');
 
   function addScenario() {
     scenarios.push(makeScenario(PRESETS[0].id, nextColorIndex++));
@@ -40,6 +41,14 @@
 
 <main>
   <h1>Muscle Mass vs. Age Calculator</h1>
+
+  <label class="metric-picker">
+    Metric:
+    <select bind:value={metric}>
+      <option value="percentOfPeak">% of Sedentary Reference Peak</option>
+      <option value="leanBodyMass" disabled>Lean body mass (coming soon)</option>
+    </select>
+  </label>
 
   {#each scenarios as scenario (scenario.id)}
     <section class="scenario-card">
@@ -110,6 +119,11 @@
   }
 
   .add-scenario {
+    display: block;
+    margin: 1rem 0;
+  }
+
+  .metric-picker {
     display: block;
     margin: 1rem 0;
   }
