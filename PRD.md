@@ -72,11 +72,18 @@ A scenario-independent, chart-wide setting:
 Metric = "percentOfPeak" | "leanBodyMass"   // V1: only "percentOfPeak" enabled
 ```
 
-- `percentOfPeak`: muscle mass expressed as % of that individual's own
-  peak (typically mid-20s). Chosen for V1 because relative decline/gain
-  rates are much better supported by available research than absolute
-  kg trajectories per activity type, and it normalizes across body
-  sizes.
+- `percentOfPeak`: muscle mass expressed as % of the **sedentary/untrained
+  reference peak** (typically reached mid-20s to 30) — not each scenario's
+  own peak. This is a deliberate correction from an earlier draft: defining
+  it as "% of one's own peak" makes every scenario hit exactly 100 at its
+  own peak by construction, which makes it impossible to show that an
+  active person can reach a *higher* peak than a sedentary one — the whole
+  premise of the tool. With a single shared reference (the sedentary
+  curve), 100 means "sedentary peak," and a trained scenario's curve can
+  and should rise above 100. Chosen for V1 (over absolute kg) because
+  relative decline/gain rates are much better supported by available
+  research than absolute kg trajectories per activity type, and it
+  normalizes across body sizes.
 - `leanBodyMass`: absolute lean body mass in kg/lbs. **UI selector shows
   this option but disables it with a "coming soon" label** — deferred
   because it requires a materially different research base (needs

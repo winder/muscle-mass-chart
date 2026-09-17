@@ -2,11 +2,13 @@
 // `source: null` until the Milestone 5 research pass replaces these with
 // cited values (PRD.md §10 M5).
 //
-// Values are % of that individual's own peak muscle mass (PRD.md §5.2).
-// nonExerciserCurve is the sedentary baseline that computeCurve.js interpolates
-// and applies activity-driven "bonus" adjustments on top of (see
-// computeCurve.js) — the M1 hardcoded "Exerciser" curve was replaced by that
-// computed curve in Milestone 2 and removed from here as dead weight.
+// Values are % of the sedentary/untrained reference peak (PRD.md §5.2) —
+// nonExerciserCurve's own peak (100, at age 30) IS that reference. It's the
+// baseline that computeCurve.js interpolates and applies activity-driven
+// "bonus" adjustments on top of (see computeCurve.js), and a trained
+// scenario's curve is expected to exceed 100 — the M1 hardcoded "Exerciser"
+// curve was replaced by that computed curve in Milestone 2 and removed from
+// here as dead weight.
 
 export const nonExerciserCurve = {
   label: 'Non-exerciser',

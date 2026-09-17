@@ -63,8 +63,8 @@
           },
           y: {
             min: 0,
-            max: 110,
-            title: { display: true, text: '% of Peak Muscle Mass' },
+            max: 140,
+            title: { display: true, text: '% of Sedentary Reference Peak' },
           },
         },
       },
