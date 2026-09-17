@@ -43,6 +43,12 @@
 <main>
   <h1>Muscle Mass vs. Age Calculator</h1>
 
+  <p class="disclaimer">
+    This is an educational approximation based on general research trends,
+    not medical advice or a clinical prediction tool. Individual results
+    vary significantly.
+  </p>
+
   <label class="metric-picker">
     Metric:
     <select bind:value={metric}>
@@ -139,5 +145,16 @@
     align-items: center;
     gap: 0.4rem;
     margin: 1rem 0;
+  }
+
+  .disclaimer {
+    background: #fff8e1;
+    border: 1px solid #e0c46c;
+    border-left: 4px solid #b8860b;
+    border-radius: 0.25rem;
+    padding: 0.75rem 1rem;
+    margin: 1rem 0;
+    font-size: 0.9em;
+    color: #5c4a00;
   }
 </style>
