@@ -3,29 +3,44 @@
   import Chart from 'chart.js/auto';
   import { nonExerciserCurve, disabilityThreshold } from '../data/muscleModel.js';
   import { SEX_COLORS } from '../data/colors.js';
+  import { CITATION_URLS } from '../data/citations.js';
 
-  // Decade-over-decade decline, read straight off the sedentary curves that
-  // drive the chart above — so this table can never drift from the model.
+  let activeFactor = $state(0);
+
+  // Age-decade buckets, not "decades since peak" — 20s/30s straddle each
+  // sex's peak, so those two are clamped to only the post-peak portion
+  // (the "fudge": we show the max loss after peak, not the net change
+  // across a decade that's partly still muscle growth).
+  const DECADE_STARTS = [20, 30, 40, 50, 60, 70, 80];
+  const DECADE_LABELS = DECADE_STARTS.map((start) => `${start}s`);
+
   function decadeDeclines(curve) {
     const points = curve.points;
     const peak = points.reduce((best, p) => (p.value > best.value ? p : best));
     const valueAt = (age) => points.find((p) => p.age === age)?.value;
-    const declines = [];
-    for (let age = peak.age; valueAt(age + 10) != null; age += 10) {
-      declines.push({ fromAge: age, toAge: age + 10, decline: valueAt(age) - valueAt(age + 10) });
-    }
-    return declines;
+    return DECADE_STARTS.map((start) => {
+      const end = start + 10;
+      if (peak.age >= end) return 0;
+      const from = Math.max(peak.age, start);
+      return valueAt(from) - valueAt(end);
+    });
   }
 
   const maleDeclines = decadeDeclines(nonExerciserCurve.male);
   const femaleDeclines = decadeDeclines(nonExerciserCurve.female);
-  const decadeCount = Math.min(maleDeclines.length, femaleDeclines.length);
-  const decadeLabels = Array.from({ length: decadeCount }, (_, i) => `Decade ${i + 1}`);
+
+  const NODE_POSITIONS = [
+    { cx: 220, cy: 50 },
+    { cx: 334, cy: 133 },
+    { cx: 291, cy: 267 },
+    { cx: 149, cy: 267 },
+    { cx: 106, cy: 133 },
+  ];
 
   const CONTRIBUTING_FACTORS = [
     {
       lines: ['Physical', 'inactivity'],
-      title: 'Disuse',
+      title: 'Physical inactivity',
       body: 'Sedentary time removes the mechanical loading signal muscle needs to maintain itself, so mass is lost faster than aging alone would cause.',
     },
     {
@@ -41,12 +56,12 @@
     {
       lines: ['Nerve', 'signal loss'],
       title: 'Nerve signal loss',
-      body: 'Motor neurons die off with age; the fast-twitch fibers they controlled are reinnervated by slower neurons or lost outright — the "dynapenia" Mitchell et al. (2012) describe.',
+      body: `Motor neurons die off with age; the fast-twitch fibers they controlled are reinnervated by slower neurons or lost outright — the "dynapenia" <a href="${CITATION_URLS.mitchell2012}" target="_blank" rel="noopener noreferrer">Mitchell et al. (2012)</a> describe.`,
     },
     {
       lines: ['Chronic', 'inflammation'],
-      title: 'Chronic inflammation & fat infiltration',
-      body: 'Persistent low-grade inflammation and fat infiltrating the muscle itself both degrade tissue quality, not just quantity (Goodpaster et al., 2006).',
+      title: 'Chronic inflammation',
+      body: `Persistent low-grade inflammation and fat infiltrating the muscle itself both degrade tissue quality, not just quantity (<a href="${CITATION_URLS.goodpaster2006}" target="_blank" rel="noopener noreferrer">Goodpaster et al., 2006</a>).`,
     },
   ];
 
@@ -54,7 +69,7 @@
     {
       task: 'Rising from a chair',
       muscles: 'Quadriceps, glutes',
-      note: 'The clinical five-times chair-stand test — timing five sit-to-stands with no arm push — is one of EWGSOP2’s own physical-performance measures (Cruz-Jentoft et al., 2019).',
+      note: `The clinical five-times chair-stand test — timing five sit-to-stands with no arm push — is one of <a href="${CITATION_URLS.cruzJentoft2019}" target="_blank" rel="noopener noreferrer">EWGSOP2</a>’s own physical-performance measures (<a href="${CITATION_URLS.cruzJentoft2019}" target="_blank" rel="noopener noreferrer">Cruz-Jentoft et al., 2019</a>).`,
     },
     {
       task: 'Climbing a flight of stairs',
@@ -64,7 +79,7 @@
     {
       task: 'Carrying groceries, opening jars',
       muscles: 'Grip, forearm, shoulder',
-      note: 'Grip strength is one of the screening measures for probable sarcopenia in EWGSOP2.',
+      note: `Grip strength is one of the screening measures for probable sarcopenia in <a href="${CITATION_URLS.cruzJentoft2019}" target="_blank" rel="noopener noreferrer">EWGSOP2</a>.`,
     },
     {
       task: 'Catching yourself in a stumble',
@@ -80,14 +95,14 @@
     return [
       {
         label: 'Male',
-        data: maleDeclines.slice(0, decadeCount).map((d) => d.decline),
+        data: maleDeclines,
         backgroundColor: SEX_COLORS.male,
         borderRadius: 4,
         maxBarThickness: 28,
       },
       {
         label: 'Female',
-        data: femaleDeclines.slice(0, decadeCount).map((d) => d.decline),
+        data: femaleDeclines,
         backgroundColor: SEX_COLORS.female,
         borderRadius: 4,
         maxBarThickness: 28,
@@ -98,27 +113,23 @@
   onMount(() => {
     chart = new Chart(canvas, {
       type: 'bar',
-      data: { labels: decadeLabels, datasets: buildDatasets() },
+      data: { labels: DECADE_LABELS, datasets: buildDatasets() },
       options: {
         responsive: true,
         maintainAspectRatio: false,
         scales: {
           x: {
-            title: { display: true, text: 'Decades since sex-specific peak' },
+            title: { display: true, text: 'Age' },
           },
           y: {
             beginAtZero: true,
-            title: { display: true, text: 'Points of peak lost that decade' },
+            title: { display: true, text: 'typical % muscle loss' },
           },
         },
         plugins: {
           tooltip: {
             callbacks: {
-              afterLabel(context) {
-                const declines = context.datasetIndex === 0 ? maleDeclines : femaleDeclines;
-                const d = declines[context.dataIndex];
-                return d ? `Ages ${d.fromAge}–${d.toAge}` : '';
-              },
+              label: (context) => `${context.parsed.y}%`,
             },
           },
         },
@@ -134,65 +145,76 @@
 
   <p>
     The age-related loss of muscle mass and strength has a clinical name:
-    <strong>sarcopenia</strong>. It's no longer treated as an inevitable, purely
-    cosmetic side effect of getting older — it has its own diagnostic
-    criteria and its own ICD-10-CM billing code (M62.84), and it's
-    independently linked to falls, fractures, longer hospital stays, and loss
-    of independent living (Cruz-Jentoft et al., 2019).
+    <strong>sarcopenia</strong>
+    (<a href={CITATION_URLS.sarcopeniaWikipedia} target="_blank" rel="noopener noreferrer">wikipedia</a>).
+    It's no longer treated as an inevitable, purely cosmetic side effect of
+    getting older — it has its own diagnostic criteria and its own ICD-10-CM
+    billing code
+    (<a href={CITATION_URLS.icd10M6284} target="_blank" rel="noopener noreferrer">M62.84</a>),
+    and it's independently linked to falls, fractures, longer hospital
+    stays, and loss of independent living (<a href={CITATION_URLS.cruzJentoft2019} target="_blank" rel="noopener noreferrer">Cruz-Jentoft et al., 2019</a>).
   </p>
 
   <h3>What drives it</h3>
   <p>
     Sarcopenia isn't caused by one thing — several mechanisms compound with
     age, and inactivity is only the one this tool lets you control for.
+    Click a factor below to see what's happening.
   </p>
 
-  <div class="diagram-wrap">
-    <svg viewBox="0 0 440 340" role="img" aria-label="Diagram of five factors contributing to sarcopenia, radiating from a central node">
-      <g class="spokes">
-        <line x1="220" y1="170" x2="220" y2="50" />
-        <line x1="220" y1="170" x2="334" y2="133" />
-        <line x1="220" y1="170" x2="291" y2="267" />
-        <line x1="220" y1="170" x2="149" y2="267" />
-        <line x1="220" y1="170" x2="106" y2="133" />
-      </g>
-
-      <g class="hub">
-        <circle cx="220" cy="170" r="60" />
-        <text x="220" y="167" text-anchor="middle" class="hub-label">Sarcopenia</text>
-        <text x="220" y="185" text-anchor="middle" class="hub-sublabel">(muscle loss)</text>
-      </g>
-
-      {#each [{ cx: 220, cy: 50 }, { cx: 334, cy: 133 }, { cx: 291, cy: 267 }, { cx: 149, cy: 267 }, { cx: 106, cy: 133 }] as pos, i}
-        <g class="node">
-          <circle cx={pos.cx} cy={pos.cy} r="42" />
-          <text x={pos.cx} y={pos.cy - 4} text-anchor="middle" class="node-label">
-            <tspan x={pos.cx} dy="0">{CONTRIBUTING_FACTORS[i].lines[0]}</tspan>
-            <tspan x={pos.cx} dy="14">{CONTRIBUTING_FACTORS[i].lines[1]}</tspan>
-          </text>
+  <div class="factor-picker">
+    <div class="diagram-wrap">
+      <svg
+        viewBox="0 0 440 340"
+        role="img"
+        aria-label="Diagram of five factors contributing to sarcopenia, radiating from a central node. Select one to read what's happening."
+      >
+        <g class="spokes">
+          <line x1="220" y1="170" x2="220" y2="50" />
+          <line x1="220" y1="170" x2="334" y2="133" />
+          <line x1="220" y1="170" x2="291" y2="267" />
+          <line x1="220" y1="170" x2="149" y2="267" />
+          <line x1="220" y1="170" x2="106" y2="133" />
         </g>
-      {/each}
-    </svg>
+
+        <g class="hub">
+          <circle cx="220" cy="170" r="60" />
+          <text x="220" y="167" text-anchor="middle" class="hub-label">Sarcopenia</text>
+          <text x="220" y="185" text-anchor="middle" class="hub-sublabel">(muscle loss)</text>
+        </g>
+
+        {#each NODE_POSITIONS as pos, i (CONTRIBUTING_FACTORS[i].title)}
+          <g
+            class="node"
+            class:active={activeFactor === i}
+            role="button"
+            tabindex="0"
+            aria-pressed={activeFactor === i}
+            aria-label={`Show what's happening: ${CONTRIBUTING_FACTORS[i].title}`}
+            onclick={() => (activeFactor = i)}
+            onkeydown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                activeFactor = i;
+              }
+            }}
+          >
+            <circle cx={pos.cx} cy={pos.cy} r="42" />
+            <text x={pos.cx} y={pos.cy - 4} text-anchor="middle" class="node-label">
+              <tspan x={pos.cx} dy="0">{CONTRIBUTING_FACTORS[i].lines[0]}</tspan>
+              <tspan x={pos.cx} dy="14">{CONTRIBUTING_FACTORS[i].lines[1]}</tspan>
+            </text>
+          </g>
+        {/each}
+      </svg>
+    </div>
+
+    <div class="factor-detail">
+      <h4>{CONTRIBUTING_FACTORS[activeFactor].title}</h4>
+      <p>{@html CONTRIBUTING_FACTORS[activeFactor].body}</p>
+    </div>
   </div>
 
-  <div class="table-wrap">
-    <table>
-      <thead>
-        <tr>
-          <th>Factor</th>
-          <th>What's happening</th>
-        </tr>
-      </thead>
-      <tbody>
-        {#each CONTRIBUTING_FACTORS as factor (factor.title)}
-          <tr>
-            <td class="factor-name">{factor.title}</td>
-            <td>{factor.body}</td>
-          </tr>
-        {/each}
-      </tbody>
-    </table>
-  </div>
   <p class="fine-print">
     Hormonal decline and anabolic resistance are well established in the
     sarcopenia literature but aren't separately modeled as inputs here —
@@ -201,18 +223,22 @@
 
   <h3>How the rate of loss changes with age</h3>
   <p>
-    Loss isn't linear — it accelerates. Reading the decline in ten-year
-    chunks starting at each sex's own peak shows roughly a doubling in pace
-    from the first post-peak decade to the last:
+    Loss isn't linear — it accelerates with age, and it starts earlier for
+    women than men. Bars are grouped by decade of life; for the 20s and 30s,
+    only the decline <em>after</em> each sex's own peak counts (age 25 for
+    women, 30 for men) — before that, muscle is still increasing.
   </p>
 
   <div class="chart-wrap">
     <canvas bind:this={canvas}></canvas>
   </div>
   <p class="fine-print">
-    Source: decline rates from Mitchell et al. (2012) and Goodpaster et al.
-    (2006, Health ABC study); earlier female peak and steeper late-life
-    decline from Silva et al. (2023).
+    Source: decline rates from
+    <a href={CITATION_URLS.mitchell2012} target="_blank" rel="noopener noreferrer">Mitchell et al. (2012)</a>
+    and
+    <a href={CITATION_URLS.goodpaster2006} target="_blank" rel="noopener noreferrer">Goodpaster et al. (2006, Health ABC study)</a>;
+    earlier female peak and steeper late-life decline from
+    <a href={CITATION_URLS.silva2023} target="_blank" rel="noopener noreferrer">Silva et al. (2023)</a>.
   </p>
 
   <div class="stat-tile">
@@ -227,7 +253,7 @@
     </div>
     <p class="stat-caption">
       meet criteria for sarcopenia, in the cohort used to derive the original
-      definition (Baumgartner et al., 1998).
+      definition (<a href={CITATION_URLS.baumgartner1998} target="_blank" rel="noopener noreferrer">Baumgartner et al., 1998</a>).
     </p>
   </div>
 
@@ -236,12 +262,15 @@
     The dashed disability threshold on the chart above sits at
     <strong>{disabilityThreshold.value}% of sedentary peak</strong> — an
     approximation of the clinical low-muscle-mass cutoffs used to diagnose
-    sarcopenia (Baumgartner et al., 1998; EWGSOP2, Cruz-Jentoft et al., 2019;
-    FNIH, Cawthon et al., 2014). Crossing it doesn't flip a switch; it marks
-    the zone where everyday tasks that used to be automatic start requiring
-    compensation, assistance from others, or become impossible outright —
-    starting with the simplest ones, like standing up out of a chair without
-    using your arms.
+    sarcopenia (<a href={CITATION_URLS.baumgartner1998} target="_blank" rel="noopener noreferrer">Baumgartner et al., 1998</a>;
+    <a href={CITATION_URLS.cruzJentoft2019} target="_blank" rel="noopener noreferrer">EWGSOP2</a>,
+    <a href={CITATION_URLS.cruzJentoft2019} target="_blank" rel="noopener noreferrer">Cruz-Jentoft et al., 2019</a>;
+    <a href={CITATION_URLS.fnihProject} target="_blank" rel="noopener noreferrer">FNIH</a>,
+    <a href={CITATION_URLS.cawthon2014} target="_blank" rel="noopener noreferrer">Cawthon et al., 2014</a>).
+    Crossing it doesn't flip a switch; it marks the zone where everyday
+    tasks that used to be automatic start requiring compensation, assistance
+    from others, or become impossible outright — starting with the simplest
+    ones, like standing up out of a chair without using your arms.
   </p>
 
   <div class="table-wrap">
@@ -258,7 +287,7 @@
           <tr>
             <td class="factor-name">{row.task}</td>
             <td>{row.muscles}</td>
-            <td>{row.note}</td>
+            <td>{@html row.note}</td>
           </tr>
         {/each}
       </tbody>
@@ -268,6 +297,7 @@
 
 <style>
   .science {
+    container-type: inline-size;
     margin: 2rem 0 0;
     padding-top: 1.5rem;
     border-top: 1px solid var(--border);
@@ -288,15 +318,58 @@
     max-width: 68ch;
   }
 
+  .science :global(a) {
+    color: inherit;
+    text-decoration: underline;
+    text-decoration-color: var(--text-muted);
+    text-underline-offset: 2px;
+  }
+
+  .science :global(a:hover),
+  .science :global(a:focus-visible) {
+    text-decoration-color: currentColor;
+  }
+
   .fine-print {
     font-size: 0.8em;
     color: var(--text-muted);
     max-width: 68ch;
   }
 
+  .factor-picker {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    margin: 1rem 0;
+  }
+
+  @container (min-width: 620px) {
+    .factor-picker {
+      flex-direction: row;
+      align-items: stretch;
+    }
+
+    .factor-picker .diagram-wrap {
+      flex: 0 0 300px;
+      max-width: 300px;
+      margin: 0;
+    }
+
+    .factor-picker .factor-detail {
+      flex: 1 1 260px;
+    }
+  }
+
   .diagram-wrap {
+    --diagram-accent: #5b4b8a;
     max-width: 440px;
-    margin: 1rem auto;
+    margin: 0 auto;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .diagram-wrap {
+      --diagram-accent: #8a72cf;
+    }
   }
 
   .diagram-wrap svg {
@@ -311,14 +384,8 @@
   }
 
   .hub circle {
-    fill: var(--diagram-accent, #5b4b8a);
+    fill: var(--diagram-accent);
     stroke: none;
-  }
-
-  @media (prefers-color-scheme: dark) {
-    .hub circle {
-      fill: #8a72cf;
-    }
   }
 
   .hub-label {
@@ -333,15 +400,56 @@
     opacity: 0.85;
   }
 
+  .node {
+    cursor: pointer;
+    outline: none;
+  }
+
   .node circle {
     fill: var(--bg);
     stroke: var(--border);
     stroke-width: 2;
+    transition: fill 0.15s ease, stroke 0.15s ease;
+  }
+
+  .node:hover circle {
+    stroke: var(--diagram-accent);
+  }
+
+  .node:focus-visible circle {
+    stroke: var(--diagram-accent);
+    stroke-width: 3;
+  }
+
+  .node.active circle {
+    fill: var(--diagram-accent);
+    stroke: var(--diagram-accent);
   }
 
   .node-label {
     fill: var(--text);
     font-size: 12px;
+  }
+
+  .node.active .node-label {
+    fill: #fff;
+  }
+
+  .factor-detail {
+    border: 1px solid var(--border);
+    border-radius: 0.5rem;
+    padding: 1rem 1.25rem;
+    min-height: 110px;
+    box-sizing: border-box;
+  }
+
+  .factor-detail h4 {
+    margin: 0 0 0.4rem;
+    font-size: 1rem;
+  }
+
+  .factor-detail p {
+    margin: 0;
   }
 
   .table-wrap {

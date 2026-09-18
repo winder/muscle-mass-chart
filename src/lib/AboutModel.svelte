@@ -1,6 +1,7 @@
 <script>
   import { nonExerciserCurve, disabilityThreshold } from '../data/muscleModel.js';
   import { ACTIVITY_TARGET_SOURCES } from '../data/computeCurve.js';
+  import { linkifyCitations } from '../data/citations.js';
 
   const ACTIVITY_LABELS = {
     strengthTraining: 'Strength training',
@@ -17,15 +18,15 @@
     <dl>
       {#each Object.values(nonExerciserCurve) as curve (curve.label)}
         <dt>{curve.label} curve</dt>
-        <dd>{curve.source}</dd>
+        <dd>{@html linkifyCitations(curve.source)}</dd>
       {/each}
 
       <dt>{disabilityThreshold.label} ({disabilityThreshold.value})</dt>
-      <dd>{disabilityThreshold.source}</dd>
+      <dd>{@html linkifyCitations(disabilityThreshold.source)}</dd>
 
       {#each activitySources as [activity, source] (activity)}
         <dt>{ACTIVITY_LABELS[activity] ?? activity} response</dt>
-        <dd>{source}</dd>
+        <dd>{@html linkifyCitations(source)}</dd>
       {/each}
     </dl>
   </div>
@@ -65,4 +66,9 @@
     margin: 0.15rem 0 0;
   }
 
+  .about-model :global(a) {
+    color: inherit;
+    text-decoration: underline;
+    text-decoration-color: currentColor;
+  }
 </style>
