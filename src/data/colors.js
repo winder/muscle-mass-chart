@@ -15,3 +15,7 @@ const SCENARIO_COLORS = [
 export function colorForIndex(index) {
   return SCENARIO_COLORS[index % SCENARIO_COLORS.length];
 }
+
+// Fixed per-sex colors, shared by the main chart and the science section below
+// it so the same sex always reads as the same color everywhere in the app.
+export const SEX_COLORS = { male: '#c62828', female: '#ad1457' };

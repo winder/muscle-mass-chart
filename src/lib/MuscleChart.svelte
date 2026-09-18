@@ -4,11 +4,9 @@
   import { disabilityThreshold, nonExerciserCurve } from '../data/muscleModel.js';
   import { computeScenarioCurve } from '../data/computeCurve.js';
   import { AGE_MIN, AGE_MAX, createScenario } from '../data/scenario.js';
-  import { colorForIndex } from '../data/colors.js';
+  import { colorForIndex, SEX_COLORS } from '../data/colors.js';
 
   let { scenarios = [], showDisabilityThreshold = true } = $props();
-
-  const BASELINE_COLOR_BY_SEX = { male: '#c62828', female: '#ad1457' };
 
   function baselineScenarioFor(sex) {
     return createScenario({
@@ -42,7 +40,7 @@
       ),
       ...sexesPresent.map((sex) => {
         const baselineScenario = baselineScenarioFor(sex);
-        return toDataset(computeScenarioCurve(baselineScenario), baselineScenario.label, BASELINE_COLOR_BY_SEX[sex]);
+        return toDataset(computeScenarioCurve(baselineScenario), baselineScenario.label, SEX_COLORS[sex]);
       }),
     ];
     if (showDisabilityThreshold) {

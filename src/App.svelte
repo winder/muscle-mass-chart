@@ -1,6 +1,7 @@
 <script>
   import MuscleChart from './lib/MuscleChart.svelte';
   import TimelineEditor from './lib/TimelineEditor.svelte';
+  import Science from './lib/Science.svelte';
   import AboutModel from './lib/AboutModel.svelte';
   import { PRESETS } from './data/presets.js';
 
@@ -96,6 +97,8 @@
   <button type="button" class="add-scenario" onclick={addScenario}>+ Add scenario</button>
 
   <MuscleChart {scenarios} {showDisabilityThreshold} />
+
+  <Science />
 
   <p class="disclaimer">
     This is an educational approximation based on general research trends,
