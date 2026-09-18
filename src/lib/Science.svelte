@@ -259,7 +259,10 @@
 
   <h3>From percentages to daily life</h3>
   <p>
-    The dashed disability threshold on the chart above sits at
+    The dashed disability threshold on the chart above (shown from age
+    {disabilityThreshold.minAge} onward, since the cutoffs behind it are
+    defined against a young-<em>adult</em> reference population — before
+    that, a low number just means still growing, not declining) sits at
     <strong>{disabilityThreshold.value}% of sedentary peak</strong> — an
     approximation of the clinical low-muscle-mass cutoffs used to diagnose
     sarcopenia (<a href={CITATION_URLS.baumgartner1998} target="_blank" rel="noopener noreferrer">Baumgartner et al., 1998</a>;

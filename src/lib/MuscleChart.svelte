@@ -47,7 +47,7 @@
       datasets.push({
         label: disabilityThreshold.label,
         data: [
-          { x: AGE_MIN, y: disabilityThreshold.value },
+          { x: disabilityThreshold.minAge, y: disabilityThreshold.value },
           { x: AGE_MAX, y: disabilityThreshold.value },
         ],
         borderColor: '#616161',

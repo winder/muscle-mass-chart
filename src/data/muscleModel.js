@@ -91,6 +91,15 @@ export const nonExerciserCurve = {
 export const disabilityThreshold = {
   label: 'Disability threshold',
   value: 70,
+  // The cutoffs this value is approximated from are all defined against a
+  // young-adult reference population (Baumgartner's is 18-40y; the DXA study
+  // used to translate it to % of peak is 20-40y — RESEARCH.md §4), so the
+  // threshold isn't a meaningful marker before adulthood. Below this age the
+  // nonExerciserCurve is still on its way UP to its own peak, not declining
+  // from it — drawing the line there would visually label a normally-still-
+  // growing teenager as "disabled," which is wrong on the model's own terms,
+  // not just a display nitpick.
+  minAge: 18,
   source:
     'Approximated from EWGSOP2 (Cruz-Jentoft et al. 2019), Baumgartner et ' +
     'al. 1998, and FNIH (Cawthon et al. 2014) appendicular-lean-mass-index ' +
