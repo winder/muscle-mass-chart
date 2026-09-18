@@ -15,8 +15,10 @@
   <summary>About the model &amp; sources</summary>
   <div class="about-model-body">
     <dl>
-      <dt>{nonExerciserCurve.label} curve</dt>
-      <dd>{nonExerciserCurve.source}</dd>
+      {#each Object.values(nonExerciserCurve) as curve (curve.label)}
+        <dt>{curve.label} curve</dt>
+        <dd>{curve.source}</dd>
+      {/each}
 
       <dt>{disabilityThreshold.label} ({disabilityThreshold.value})</dt>
       <dd>{disabilityThreshold.source}</dd>

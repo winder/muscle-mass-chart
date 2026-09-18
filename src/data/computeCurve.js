@@ -28,11 +28,13 @@
 // nonExerciserCurve, not here).
 //
 // The metric (PRD §5.2) is % of the SEDENTARY/UNTRAINED reference peak, not
-// each scenario's own peak — 100 is nonExerciserCurve's peak specifically,
-// and a trained scenario is expected to exceed 100 at its own peak. There is
-// deliberately no upper clamp here: capping at 100 would make it impossible
-// for any activity to ever show a higher peak than sedentary, which
-// contradicts the whole premise of the tool.
+// each scenario's own peak — 100 is that scenario's own-sex nonExerciserCurve
+// peak specifically (RESEARCH.md §1: male and female are each normalized
+// against their own peak, not a shared cross-sex reference), and a trained
+// scenario is expected to exceed 100 at its own peak. There is deliberately
+// no upper clamp here: capping at 100 would make it impossible for any
+// activity to ever show a higher peak than sedentary, which contradicts the
+// whole premise of the tool.
 
 import { nonExerciserCurve } from './muscleModel.js';
 import { AGE_MIN, AGE_MAX, findPhaseAtAge } from './scenario.js';
@@ -83,9 +85,9 @@ function targetFor(table, phase) {
   return row[phase.intensity ?? 'moderate'] ?? row.moderate;
 }
 
-/** Piecewise-linear interpolation over the sedentary baseline curve. */
-function baselineValueAt(age) {
-  const points = nonExerciserCurve.points;
+/** Piecewise-linear interpolation over the sex-specific sedentary baseline curve. */
+function baselineValueAt(age, sex) {
+  const points = (nonExerciserCurve[sex] ?? nonExerciserCurve.male).points;
   if (age <= points[0].age) return points[0].value;
   for (let i = 0; i < points.length - 1; i++) {
     const a = points[i];
@@ -100,19 +102,20 @@ function baselineValueAt(age) {
 
 /** @param {import('./scenario.js').Scenario} scenario */
 export function computeScenarioCurve(scenario, { stepYears = 1 } = {}) {
+  const sex = scenario.sex ?? 'male';
   const phases = [...scenario.phases].sort((a, b) => a.startAge - b.startAge);
-  const points = [{ age: AGE_MIN, value: baselineValueAt(AGE_MIN) }];
+  const points = [{ age: AGE_MIN, value: baselineValueAt(AGE_MIN, sex) }];
   let bonus = 0;
   let retention = 1;
-  let value = baselineValueAt(AGE_MIN);
-  let prevBaseline = baselineValueAt(AGE_MIN);
+  let value = baselineValueAt(AGE_MIN, sex);
+  let prevBaseline = baselineValueAt(AGE_MIN, sex);
   for (let age = AGE_MIN + stepYears; age <= AGE_MAX; age += stepYears) {
     const phase = findPhaseAtAge(phases, age) ?? phases[phases.length - 1];
     const prevBonus = bonus;
     bonus += (targetFor(ACTIVITY_TARGET_BONUS, phase) - bonus) * APPROACH_RATE_PER_YEAR * stepYears;
     retention += (targetFor(ACTIVITY_TARGET_RETENTION, phase) - retention) * APPROACH_RATE_PER_YEAR * stepYears;
 
-    const baseline = baselineValueAt(age);
+    const baseline = baselineValueAt(age, sex);
     const baselineDelta = baseline - prevBaseline;
     // The *natural* (age-driven) component: full baseline growth during
     // growing years regardless of activity, but only `retention`'s share of

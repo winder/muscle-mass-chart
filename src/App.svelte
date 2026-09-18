@@ -47,7 +47,7 @@
   <label class="metric-picker">
     Metric:
     <select bind:value={metric}>
-      <option value="percentOfPeak">% of Sedentary Reference Peak</option>
+      <option value="percentOfPeak">% of Own-Sex Sedentary Reference Peak</option>
       <option value="leanBodyMass" disabled>Lean body mass (coming soon)</option>
     </select>
   </label>
@@ -79,7 +79,6 @@
             <option value="female">Female</option>
           </select>
         </label>
-        <span class="sex-note">(doesn't affect the curve yet — pending the research pass)</span>
 
         <button
           type="button"
@@ -121,12 +120,6 @@
     flex-wrap: wrap;
     gap: 1rem;
     margin-bottom: 0.5rem;
-  }
-
-  .scenario-header .sex-note {
-    color: #777;
-    font-size: 0.85em;
-    flex: 1 1 auto;
   }
 
   .scenario-header button {

@@ -1,18 +1,23 @@
 <script>
   import { onMount, onDestroy } from 'svelte';
   import Chart from 'chart.js/auto';
-  import { disabilityThreshold } from '../data/muscleModel.js';
+  import { disabilityThreshold, nonExerciserCurve } from '../data/muscleModel.js';
   import { computeScenarioCurve } from '../data/computeCurve.js';
   import { AGE_MIN, AGE_MAX, createScenario } from '../data/scenario.js';
   import { colorForIndex } from '../data/colors.js';
 
   let { scenarios = [], showDisabilityThreshold = true } = $props();
 
-  const baselineScenario = createScenario({
-    id: 'baseline',
-    label: 'Sedentary baseline',
-    phases: [{ startAge: AGE_MIN, endAge: AGE_MAX, activityType: 'sedentary' }],
-  });
+  const BASELINE_COLOR_BY_SEX = { male: '#c62828', female: '#ad1457' };
+
+  function baselineScenarioFor(sex) {
+    return createScenario({
+      id: `baseline-${sex}`,
+      label: `Sedentary baseline (${sex})`,
+      sex,
+      phases: [{ startAge: AGE_MIN, endAge: AGE_MAX, activityType: 'sedentary' }],
+    });
+  }
 
   let canvas;
   let chart;
@@ -30,11 +35,15 @@
   }
 
   function buildDatasets() {
+    const sexesPresent = [...new Set(scenarios.map((s) => s.sex ?? 'male'))].sort();
     const datasets = [
       ...scenarios.map((scenario) =>
         toDataset(computeScenarioCurve(scenario), scenario.label, colorForIndex(scenario.colorIndex))
       ),
-      toDataset(computeScenarioCurve(baselineScenario), baselineScenario.label, '#c62828'),
+      ...sexesPresent.map((sex) => {
+        const baselineScenario = baselineScenarioFor(sex);
+        return toDataset(computeScenarioCurve(baselineScenario), baselineScenario.label, BASELINE_COLOR_BY_SEX[sex]);
+      }),
     ];
     if (showDisabilityThreshold) {
       datasets.push({
@@ -70,7 +79,7 @@
           y: {
             min: 0,
             max: 140,
-            title: { display: true, text: '% of Sedentary Reference Peak' },
+            title: { display: true, text: '% of Own-Sex Sedentary Reference Peak' },
           },
         },
       },
