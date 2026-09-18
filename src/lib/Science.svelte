@@ -65,6 +65,21 @@
     },
   ];
 
+  const BONE_ACTIVITY_EFFECTS = [
+    {
+      activity: 'High-intensity strength + impact training',
+      effect: `Meaningful bone gains are possible even with existing low bone mass: +2.9% lumbar spine BMD over 8 months, vs −1.2% in a low-intensity control group (<a href="${CITATION_URLS.watson2018}" target="_blank" rel="noopener noreferrer">Watson et al., 2018</a>).`,
+    },
+    {
+      activity: 'Weight-bearing cardio (walking, running)',
+      effect: `Repeated impact loading stimulates bone formation; competitive runners had spinal osteopenia at roughly a third the rate of competitive cyclists of similar fitness (<a href="${CITATION_URLS.rector2008}" target="_blank" rel="noopener noreferrer">Rector et al., 2008</a>).`,
+    },
+    {
+      activity: 'Non-weight-bearing cardio (cycling, swimming)',
+      effect: 'Little to no bone benefit despite excellent cardiovascular fitness — same comparison as above.',
+    },
+  ];
+
   const DISABILITY_TASKS = [
     {
       task: 'Rising from a chair',
@@ -296,6 +311,72 @@
       </tbody>
     </table>
   </div>
+
+  <h3>Other contributing factors</h3>
+  <p>
+    Strength training and weight-bearing cardio don't just protect
+    muscle — they're also among the best tools against
+    <strong>osteoporosis</strong>
+    (<a href={CITATION_URLS.osteoporosisWikipedia} target="_blank" rel="noopener noreferrer">wikipedia</a>),
+    a bone-thinning condition that often runs alongside sarcopenia. Bone
+    loss can even outpace muscle loss at the same age: postmenopausal
+    women lose bone at roughly 1.9% a year in the years right after
+    menopause (<a href={CITATION_URLS.riggs2003} target="_blank" rel="noopener noreferrer">Riggs et al., 2003</a>)
+    — around 10% in just five years.
+  </p>
+
+  <div class="stat-tile">
+    <div class="stat-block">
+      <span class="stat-value">19.6%</span>
+      <span class="stat-label">of women 50+</span>
+    </div>
+    <span class="stat-arrow" aria-hidden="true">&rarr;</span>
+    <div class="stat-block">
+      <span class="stat-value">27.1%</span>
+      <span class="stat-label">of women 65+</span>
+    </div>
+    <p class="stat-caption">
+      have osteoporosis by DXA scan — and counting low bone mass too,
+      over 80% of women 65+ have one or the other
+      (<a href={CITATION_URLS.sarafrazi2021} target="_blank" rel="noopener noreferrer">Sarafrazi Isfahani et al., 2021</a>).
+    </p>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Activity type</th>
+          <th>Effect on bone density</th>
+        </tr>
+      </thead>
+      <tbody>
+        {#each BONE_ACTIVITY_EFFECTS as row (row.activity)}
+          <tr>
+            <td class="factor-name">{row.activity}</td>
+            <td>{@html row.effect}</td>
+          </tr>
+        {/each}
+      </tbody>
+    </table>
+  </div>
+
+  <p>
+    The two conditions compound each other more than simple addition would
+    suggest: one postmenopausal cohort found the odds of a fragility
+    fracture were 2.5&times; with osteoporosis alone, 1.9&times; with
+    sarcopenia alone, and 3.7&times; with both together —
+    "osteosarcopenia" —
+    (<a href={CITATION_URLS.lin2021} target="_blank" rel="noopener noreferrer">Lin et al., 2021</a>).
+    Muscle and bone protection are complementary benefits of the same
+    activity, not two separate reasons to exercise.
+  </p>
+
+  <p class="fine-print">
+    Bone density isn't modeled by this tool's calculator; it's included
+    here as context for why strength training and weight-bearing cardio
+    are recommended beyond their effect on the muscle-mass curve above.
+  </p>
 </section>
 
 <style>

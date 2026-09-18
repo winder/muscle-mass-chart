@@ -4,6 +4,7 @@
 
 export const CITATION_URLS = {
   sarcopeniaWikipedia: 'https://en.wikipedia.org/wiki/Sarcopenia',
+  osteoporosisWikipedia: 'https://en.wikipedia.org/wiki/Osteoporosis',
   icd10M6284: 'https://www.icd10data.com/ICD10CM/Codes/M60-M63/M60-M63/M62-/M62.84',
   cruzJentoft2019: 'https://pmc.ncbi.nlm.nih.gov/articles/PMC6322506/',
   mitchell2012: 'https://pmc.ncbi.nlm.nih.gov/articles/PMC3429036/',
@@ -18,6 +19,14 @@ export const CITATION_URLS = {
   wroblewski2011:
     'https://www.researchgate.net/publication/51748759_Chronic_Exercise_Preserves_Lean_Muscle_Mass_in_Masters_Athletes',
   refalo2025: 'https://pmc.ncbi.nlm.nih.gov/articles/PMC11869894/',
+
+  // RESEARCH_BONE.md — bone density / osteoporosis pass, supporting the
+  // "Other contributing factors" subsection.
+  riggs2003: 'https://www.nejm.org/doi/full/10.1056/NEJMoa022464',
+  sarafrazi2021: 'https://www.cdc.gov/nchs/products/databriefs/db405.htm',
+  watson2018: 'https://pubmed.ncbi.nlm.nih.gov/28975661/',
+  rector2008: 'https://www.sciencedirect.com/science/article/abs/pii/S0026049507003253',
+  lin2021: 'https://doi.org/10.3390/ijms22105256',
 };
 
 // Matches the "Author et al. YYYY" style used in the data files' plain-text
